@@ -50,10 +50,12 @@ int get_if_address(const char *ifname, uint32_t *ip, uint32_t *mask, uint8_t *ma
   memset(&_ifr, 0, sizeof(_ifr));
   _ifr.ifr_addr.sa_family = AF_INET;
   strncpy(_ifr.ifr_name, ifname , IFNAMSIZ - 1);
+#if !defined(__APPLE__)
   if (0 == ioctl(fd, SIOCGIFHWADDR, &_ifr))
   {
       memcpy(mac, (unsigned char *)_ifr.ifr_hwaddr.sa_data, 6);
   }
+#endif
 
   buffer = (char *) malloc(2048);
   if (buffer == NULL)
