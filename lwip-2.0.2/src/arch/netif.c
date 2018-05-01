@@ -158,8 +158,13 @@ _netdev_try:
 	  {
 	    available_ports[i] = LWIP_LINUX_CLIENT_START_PORT_NUM + (i - LWIP_LINUX_PORT_NUM);
 	  }
+
+      // Not saying we shouldn't do this on macOS, but we will need to do it differently
+      // (likely via /usr/libexec/ApplicationFirewall/socketfilterfw)
+#if !defined(__APPLE__)
 		sprintf(cmd, "sudo iptables -A INPUT -p tcp --destination-port %u -j DROP", available_ports[i]);
 		system(cmd);
+#endif
 	}
 
 	// Read MAC address from pre-programmed area of EEPROM.
@@ -246,12 +251,15 @@ void net_quit(void)
 
 	/* Enable firewall */
 	//system("sudo ufw enable");
+
+#if !defined(__APPLE__)
 	for (i = 0; i < LWIP_LINUX_PORT_NUM*2; i++)
 	{
 		/* Accept packets on ports */
 		sprintf(cmd, "sudo iptables -A INPUT -p tcp --destination-port %u -j ACCEPT", available_ports[i]);
 		system(cmd);
 	}
+#endif
 }
 
 pthread_t start_netif(void)
