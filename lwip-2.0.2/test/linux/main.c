@@ -22,11 +22,16 @@
  */
 #include "lwip.h"
 
+#if defined(__APPLE__)
+struct ip_globals ip_data;
+#endif
+
+
 int main(void)
 {
   pthread_t thread;
 
-	if(net_init(NULL) != ERR_OK)
+    if(net_init("en1") != ERR_OK)
 	{
 		printf("Failed to initialize netif!\n");
 		goto _EXIT;
