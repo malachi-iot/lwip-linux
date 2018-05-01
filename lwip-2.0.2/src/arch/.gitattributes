@@ -1,0 +1,3 @@
+* text=auto
+
+netif.c		filter=reverse-clean
